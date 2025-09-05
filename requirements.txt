@@ -1,0 +1,3 @@
+pyrogram==2.0.105
+yt-dlp==2025.8.4
+python-dotenv==1.0.0
