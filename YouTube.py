@@ -6,6 +6,7 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from yt_dlp import YoutubeDL
 from tempfile import TemporaryDirectory
+from bot import app   # ✅ use shared client
 
 # --- Temporary storage ---
 url_store = {}        # short_id -> URL
@@ -14,7 +15,7 @@ last_percent_map = {} # query.id -> last percent
 
 
 # --- Handle YouTube links ---
-@bot.on_message(filters.regex(r"(https?://)?(www\.)?(youtube\.com|youtu\.be)/"))
+@app.on_message(filters.regex(r"(https?://)?(www\.)?(youtube\.com|youtu\.be)/"))
 async def youtube_link(client, message):
     url = message.text.strip()
     short_id = str(uuid.uuid4())[:8]
@@ -31,7 +32,7 @@ async def youtube_link(client, message):
 
 
 # --- Callback query handler ---
-@bot.on_callback_query()
+@app.on_callback_query()
 async def callback_handler(client, query: CallbackQuery):
     data = query.data
 
