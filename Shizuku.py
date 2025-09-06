@@ -166,7 +166,7 @@ async def afk_handler(bot, m: Message):
             afk_time = format_afk_time(afk_data[1])
             reason = afk_data[2] if afk_data[2] else random.choice(SHIZUKU_QUOTES)
             await m.reply_text(
-                f"😴 {m.reply_to_message.from_user.mention} is AFK.\n"
+                f"😴🎀 {m.reply_to_message.from_user.mention} is AFK.\n"
                 f"⏳ AFK: {afk_time}\n"
                 f"📋 Reason: {reason}"
             )
