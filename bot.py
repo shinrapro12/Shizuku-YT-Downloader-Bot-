@@ -18,7 +18,7 @@ app = Client(
 )
 
 # Import bot features
-from shizuku import *
+from Shizuku import *
 from youtube import *
 
 print("✅ Shizuku + YouTube Bot is running...")
