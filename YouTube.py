@@ -6,7 +6,6 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from yt_dlp import YoutubeDL
 from tempfile import TemporaryDirectory
-from bot import bot   # use the shared bot client
 
 # --- Temporary storage ---
 url_store = {}        # short_id -> URL
@@ -22,7 +21,6 @@ async def youtube_link(client, message):
     url_store[short_id] = url
     user_choices[short_id] = {}
 
-    # Step 1: Audio or Video
     await message.reply_text(
         "Select type to download:",
         reply_markup=InlineKeyboardMarkup([
