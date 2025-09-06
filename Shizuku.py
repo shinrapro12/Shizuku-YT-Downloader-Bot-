@@ -3,7 +3,7 @@ import random
 from datetime import datetime
 from pyrogram import filters
 from pyrogram.types import Message
-from bot import bot  # ❌ remove this line completely
+from bot import app   # ✅ import main app instead of bot
 
 # ================== DATABASE ==================
 conn = sqlite3.connect("afk.db", check_same_thread=False)
@@ -70,8 +70,8 @@ def format_afk_time(start_time):
 
 # ================== COMMANDS ==================
 
-@bot.on_message(filters.command("start"))
-async def start(bot, m: Message):
+@app.on_message(filters.command("start"))
+async def start(_, m: Message):
     caption = (
         "🌸 Welcome to Shizuku AFK Bot! 🌸\n\n"
         "Inspired by Shizuku from Hunter x Hunter, this bot brings her calm and mysterious vibe into your group. "
@@ -83,8 +83,8 @@ async def start(bot, m: Message):
         caption=caption
     )
 
-@bot.on_message(filters.command("help"))
-async def help_cmd(bot, m: Message):
+@app.on_message(filters.command("help"))
+async def help_cmd(_, m: Message):
     caption = (
         "🌸 Shizuku AFK Bot Help Menu 🌸\n\n"
         "Available Commands:\n"
@@ -100,13 +100,13 @@ async def help_cmd(bot, m: Message):
         caption=caption
     )
 
-@bot.on_message(filters.command("ping"))
-async def ping(bot, m: Message):
+@app.on_message(filters.command("ping"))
+async def ping(_, m: Message):
     now = datetime.now().strftime("%A, %d %B %Y | %H:%M:%S")
     await m.reply_text(f"🏓 Pong!\n📅 {now}")
 
-@bot.on_message(filters.command("afk"))
-async def afk_set(bot, m: Message):
+@app.on_message(filters.command("afk"))
+async def afk_set(_, m: Message):
     reason = m.text.split(" ", 1)[1] if len(m.text.split()) > 1 else None
     set_afk(m.from_user.id, reason)
     if reason:
@@ -114,35 +114,34 @@ async def afk_set(bot, m: Message):
     else:
         await m.reply_text(f"😴 {m.from_user.mention} is now AFK.\n{random.choice(SHIZUKU_QUOTES)}")
 
-@bot.on_message(filters.command("info"))
-async def info_handler(bot, m: Message):
+@app.on_message(filters.command("info"))
+async def info_handler(_, m: Message):
     user = m.from_user
     response = f"👤 User Info:\n" \
                f"Name: {user.first_name} {user.last_name or ''}\n" \
                f"Username: @{user.username or 'N/A'}"
     await m.reply(response)
 
-@bot.on_message(filters.command("id"))
-async def id_handler(bot, m: Message):
+@app.on_message(filters.command("id"))
+async def id_handler(_, m: Message):
     user = m.from_user
-    await m.reply(f"🆔 User ID: `{user.id}`")  # copy-paste friendly
+    await m.reply(f"🆔 User ID: `{user.id}`")
 
-@bot.on_message(filters.command("chatinfo"))
-async def chatinfo_handler(bot, m: Message):
+@app.on_message(filters.command("chatinfo"))
+async def chatinfo_handler(_, m: Message):
     chat = m.chat
     response = f"🏠 Chat Info:\n" \
                f"Title: {chat.title}\n" \
                f"Type: {chat.type}\n" \
-               f"Chat ID: `{chat.id}`"  # copy-paste friendly
+               f"Chat ID: `{chat.id}`"
     await m.reply(response)
 
 # ================== AFK HANDLER ==================
-@bot.on_message(~filters.command(["afk", "start", "help", "ping", "info", "id", "chatinfo"]))
-async def afk_handler(bot, m: Message):
+@app.on_message(~filters.command(["afk", "start", "help", "ping", "info", "id", "chatinfo"]))
+async def afk_handler(_, m: Message):
     if not m.from_user:
         return
 
-    # Remove AFK if AFK user sends a message
     afk_data = get_afk(m.from_user.id)
     if afk_data:
         afk_time = format_afk_time(afk_data[1])
@@ -155,7 +154,6 @@ async def afk_handler(bot, m: Message):
         remove_afk(m.from_user.id)
         return
 
-    # Notify if someone tags or replies to AFK user
     target = None
     if m.reply_to_message and m.reply_to_message.from_user:
         target = m.reply_to_message.from_user.id
