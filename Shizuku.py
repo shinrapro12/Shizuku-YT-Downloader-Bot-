@@ -3,7 +3,7 @@ import random
 from datetime import datetime
 from pyrogram import filters
 from pyrogram.types import Message
-from bot import app   # ✅ import main app instead of bot
+from bot import app   # ✅ import main app
 
 # ================== DATABASE ==================
 conn = sqlite3.connect("afk.db", check_same_thread=False)
@@ -70,7 +70,7 @@ def format_afk_time(start_time):
 
 # ================== COMMANDS ==================
 
-@bot.on_message(filters.command("start"))
+@app.on_message(filters.command("start"))
 async def start(_, m: Message):
     caption = (
         "🌸 Welcome to Shizuku AFK Bot! 🌸\n\n"
@@ -83,7 +83,7 @@ async def start(_, m: Message):
         caption=caption
     )
 
-@bot.on_message(filters.command("help"))
+@app.on_message(filters.command("help"))
 async def help_cmd(_, m: Message):
     caption = (
         "🌸 Shizuku AFK Bot Help Menu 🌸\n\n"
@@ -100,12 +100,12 @@ async def help_cmd(_, m: Message):
         caption=caption
     )
 
-@bot.on_message(filters.command("ping"))
+@app.on_message(filters.command("ping"))
 async def ping(_, m: Message):
     now = datetime.now().strftime("%A, %d %B %Y | %H:%M:%S")
     await m.reply_text(f"🏓 Pong!\n📅 {now}")
 
-@bot.on_message(filters.command("afk"))
+@app.on_message(filters.command("afk"))
 async def afk_set(_, m: Message):
     reason = m.text.split(" ", 1)[1] if len(m.text.split()) > 1 else None
     set_afk(m.from_user.id, reason)
@@ -114,7 +114,7 @@ async def afk_set(_, m: Message):
     else:
         await m.reply_text(f"😴 {m.from_user.mention} is now AFK.\n{random.choice(SHIZUKU_QUOTES)}")
 
-@bot.on_message(filters.command("info"))
+@app.on_message(filters.command("info"))
 async def info_handler(_, m: Message):
     user = m.from_user
     response = f"👤 User Info:\n" \
@@ -122,12 +122,12 @@ async def info_handler(_, m: Message):
                f"Username: @{user.username or 'N/A'}"
     await m.reply(response)
 
-@bot.on_message(filters.command("id"))
+@app.on_message(filters.command("id"))
 async def id_handler(_, m: Message):
     user = m.from_user
     await m.reply(f"🆔 User ID: `{user.id}`")
 
-@bot.on_message(filters.command("chatinfo"))
+@app.on_message(filters.command("chatinfo"))
 async def chatinfo_handler(_, m: Message):
     chat = m.chat
     response = f"🏠 Chat Info:\n" \
@@ -137,7 +137,7 @@ async def chatinfo_handler(_, m: Message):
     await m.reply(response)
 
 # ================== AFK HANDLER ==================
-@bot.on_message(~filters.command(["afk", "start", "help", "ping", "info", "id", "chatinfo"]))
+@app.on_message(~filters.command(["afk", "start", "help", "ping", "info", "id", "chatinfo"]))
 async def afk_handler(_, m: Message):
     if not m.from_user:
         return
