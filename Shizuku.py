@@ -70,7 +70,7 @@ def format_afk_time(start_time):
 
 # ================== COMMANDS ==================
 
-@app.on_message(filters.command("start"))
+@bot.on_message(filters.command("start"))
 async def start(_, m: Message):
     caption = (
         "🌸 Welcome to Shizuku AFK Bot! 🌸\n\n"
@@ -83,7 +83,7 @@ async def start(_, m: Message):
         caption=caption
     )
 
-@app.on_message(filters.command("help"))
+@bot.on_message(filters.command("help"))
 async def help_cmd(_, m: Message):
     caption = (
         "🌸 Shizuku AFK Bot Help Menu 🌸\n\n"
@@ -100,12 +100,12 @@ async def help_cmd(_, m: Message):
         caption=caption
     )
 
-@app.on_message(filters.command("ping"))
+@bot.on_message(filters.command("ping"))
 async def ping(_, m: Message):
     now = datetime.now().strftime("%A, %d %B %Y | %H:%M:%S")
     await m.reply_text(f"🏓 Pong!\n📅 {now}")
 
-@app.on_message(filters.command("afk"))
+@bot.on_message(filters.command("afk"))
 async def afk_set(_, m: Message):
     reason = m.text.split(" ", 1)[1] if len(m.text.split()) > 1 else None
     set_afk(m.from_user.id, reason)
@@ -114,7 +114,7 @@ async def afk_set(_, m: Message):
     else:
         await m.reply_text(f"😴 {m.from_user.mention} is now AFK.\n{random.choice(SHIZUKU_QUOTES)}")
 
-@app.on_message(filters.command("info"))
+@bot.on_message(filters.command("info"))
 async def info_handler(_, m: Message):
     user = m.from_user
     response = f"👤 User Info:\n" \
@@ -122,12 +122,12 @@ async def info_handler(_, m: Message):
                f"Username: @{user.username or 'N/A'}"
     await m.reply(response)
 
-@app.on_message(filters.command("id"))
+@bot.on_message(filters.command("id"))
 async def id_handler(_, m: Message):
     user = m.from_user
     await m.reply(f"🆔 User ID: `{user.id}`")
 
-@app.on_message(filters.command("chatinfo"))
+@bot.on_message(filters.command("chatinfo"))
 async def chatinfo_handler(_, m: Message):
     chat = m.chat
     response = f"🏠 Chat Info:\n" \
@@ -137,7 +137,7 @@ async def chatinfo_handler(_, m: Message):
     await m.reply(response)
 
 # ================== AFK HANDLER ==================
-@app.on_message(~filters.command(["afk", "start", "help", "ping", "info", "id", "chatinfo"]))
+@bot.on_message(~filters.command(["afk", "start", "help", "ping", "info", "id", "chatinfo"]))
 async def afk_handler(_, m: Message):
     if not m.from_user:
         return
