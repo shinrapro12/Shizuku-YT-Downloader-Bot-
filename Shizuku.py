@@ -3,7 +3,7 @@ import random
 from datetime import datetime
 from pyrogram import filters
 from pyrogram.types import Message
-from bot import app   # ✅ import main app
+from bot import app   # ✅ import the shared app
 
 # ================== DATABASE ==================
 conn = sqlite3.connect("afk.db", check_same_thread=False)
